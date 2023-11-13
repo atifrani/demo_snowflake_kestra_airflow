@@ -4,9 +4,9 @@ USE ROLE ACCOUNTADMIN;
 -- Use COMPUTE_WH warehouse
 USE WAREHOUSE COMPUTE_WH;
 
-CREATE DATABASE IF NOT EXISTS tasks;
+CREATE DATABASE IF NOT EXISTS airbnb;
 
-USE tasks;
+USE airbnb;
 
 CREATE SCHEMA IF NOT EXISTS silver;
 
@@ -16,9 +16,10 @@ CREATE OR REPLACE PROCEDURE CREATE_SRC_HOSTS_PROC ( )
     LANGUAGE JAVASCRIPT
     AS
         $$
-        var create_stmt = "CREATE OR REPLACE TABLE tasks.silver.src_hosts (host_id integer, host_name string, is_superhost string, created_at datetime, updated_at datetime);"
-
-        var load_stmt = " INSERT INTO tasks.silver.src_hosts SELECT id AS host_id, NAME AS host_name, is_superhost, created_at, updated_at FROM tasks.bronze.raw_hosts_stream;"
+        -- create table
+        var create_stmt = "CREATE OR REPLACE TABLE airbnb.silver.src_hosts (host_id integer, host_name string, is_superhost string, created_at datetime, updated_at datetime);"
+        -- insert into table
+        var load_stmt = " INSERT INTO airbnb.silver.src_hosts SELECT id AS host_id, NAME AS host_name, is_superhost, created_at, updated_at FROM tasks.bronze.raw_hosts_stream;"
 
         snowflake.execute( { sqlText: create_stmt });
         snowflake.execute( { sqlText: load_stmt });
@@ -42,22 +43,8 @@ SHOW TASKS;
 --  Start  task
 ALTER TASK CREATE_SRC_HOSTS_TASK RESUME;
 
-SELECT * FROM tasks.silver.src_hosts;
+SELECT * FROM airbnb.silver.src_hosts;
 
-SELECT * FROM tasks.bronze.raw_hosts_stream;
+SELECT * FROM airbnb.bronze.raw_hosts_stream;
 
 ALTER TASK CREATE_SRC_HOSTS_TASK SUSPEND;
-
-
--- Clean script
-
-
-DROP PROCEDURE tasks.bronze.CREATE_SRC_HOSTS_PROC;
-
-DROP TASK tasks.bronze.CREATE_SRC_HOSTS_TASK;
-
-DROP TABLE tasks.bronze.src_hosts;
-
-DROP SCHEMA tasks.silver;
-
-DROP DATABASE tasks;

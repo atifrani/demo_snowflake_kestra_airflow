@@ -22,40 +22,20 @@ with DAG(
 ) as dag:
 
 
-    create_raw_table_hosts = SnowflakeOperator(
+    bronze_table_hosts = SnowflakeOperator(
         task_id="create_raw_table_hosts",
         snowflake_conn_id='snowflake_dev',
-        sql="sql/demo1/raw_hosts.sql",
+        sql="sql/raw_hosts.sql",
         params={},
     )
 
-    create_raw_table_listings = SnowflakeOperator(
-        task_id="create_raw_table_listings",
+    silver_table_hosts = SnowflakeOperator(
+        task_id="create_raw_table_hosts",
         snowflake_conn_id='snowflake_dev',
-        sql="sql/demo1/raw_listings.sql",
+        sql="sql/src_hosts.sql",
         params={},
-    )
+    )    
 
-    create_raw_table_reviews = SnowflakeOperator(
-        task_id="create_raw_table_reviews",
-        snowflake_conn_id='snowflake_dev',
-        sql="sql/demo1/raw_reviews.sql",
-        params={},
-    )
-   
-    create_src_table_hosts = BashOperator(
-        task_id='create_src_table_hosts',
-        bash_command='cd dbt/demo1/models/src && dbt run --select "src_hosts.sql"'
-    )
 
-    create_src_table_listings = BashOperator(
-        task_id='create_src_table_listings',
-        bash_command='cd dbt/demo1/models/src && dbt run --select "src_listings.sql"'
-    )
-
-    create_src_table_reviews = BashOperator(
-        task_id='create_src_table_reviews',
-        bash_command='cd dbt/demo1/models/src && dbt run --select "src_reviews.sql"'
-    )
     
-    create_raw_table_hosts >>    create_raw_table_listings >>    create_raw_table_reviews 
+    bronze_table_hosts >>    silver_table_hosts 
