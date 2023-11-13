@@ -38,4 +38,4 @@ with DAG(
 
 
     
-    bronze_table_hosts >>    silver_table_hosts 
+    bronze_table_hosts >>  silver_table_hosts 
