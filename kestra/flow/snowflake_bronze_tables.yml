@@ -11,7 +11,7 @@ tasks:
           id: create_raw_hosts
           type: io.kestra.plugin.jdbc.snowflake.Query
           sql: |
-               CREATE OR REPLACE TABLE raw_hosts
+               CREATE OR REPLACE TABLE raw_hosts_kst
                           (id integer,
                            name string,
                            is_superhost string,
@@ -21,7 +21,7 @@ tasks:
           id: load_raw_hosts 
           type: io.kestra.plugin.jdbc.snowflake.Query
           sql: |
-              COPY INTO raw_hosts  (id, name, is_superhost, created_at, updated_at)
+              COPY INTO raw_hosts_kst  (id, name, is_superhost, created_at, updated_at)
               from 's3://logbrain-datasets/airbnb/hosts.csv'
               FILE_FORMAT = (type = csv field_optionally_enclosed_by='"' skip_header = 1);
       dependsOn:
