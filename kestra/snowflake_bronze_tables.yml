@@ -2,8 +2,8 @@ id: snowflake_bronze_tables
 namespace: dev
 
 tasks:
-  - id: dag_hosts
-    description: "airbnb data flow dbt and snowflake"
+  - id: dag_raw_hosts
+    description: "airbnb data flow raw hosts"
     type: io.kestra.core.tasks.flows.Dag
     tasks:
 
